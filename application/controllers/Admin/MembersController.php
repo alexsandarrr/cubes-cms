@@ -88,6 +88,75 @@ class Admin_MembersController extends Zend_Controller_Action
     
     public function editAction () {
         
+        $request = $this->getRequest();
+        
+        $id = (int) $request->getParam('id');
+        
+        if ($id <= 0) {
+            
+            // prekida se izvrsavanje programa i prikazuje se "Page not found"
+            throw new Zend_Controller_Router_Exception('Invalid member id: ' . $id, 404);
+        }
+        
+        $cmsMembersTable = new Application_Model_DbTable_CmsMembers();
+                
+        $member = $cmsMembersTable->getMemberById($id);
+        
+        if (empty($member)) {
+            throw new Zend_Controller_Router_Exception('No member is found with id: ' . $id, 404);
+        }
+        
+        
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+
+        $form = new Application_Form_Admin_MemberAdd();
+
+        //default form data
+        $form->populate($member);
+
+        $systemMessages = array(
+            'success' => $flashMessenger->getMessages('success'),
+            'errors' => $flashMessenger->getMessages('errors'),
+        );
+
+        if ($request->isPost() && $request->getPost('task') === 'update') {
+
+            try {
+
+                // check form is valid
+                if (!$form->isValid($request->getPost())) {
+                    throw new Application_Model_Exception_InvalidInput('Invalid data was sent for member');
+                }
+
+                // get form data
+                $formData = $form->getValues();
+                
+                // radimo update postojeceg zapisa u tabeli
+                $cmsMembersTable->update($formData, 'id = ' . $member['id']);
+
+                // do actual task
+                // save to database etc
+                
+                // set system message
+                $flashMessenger->addMessage('Member has been updated', 'success');
+
+                // redirect to same or another page
+                $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_members',
+                            'action' => 'index'
+                                ), 'default', true);
+            } catch (Application_Model_Exception_InvalidInput $ex) {
+                $systemMessages['errors'][] = $ex->getMessage();
+            }
+        }
+
+        $this->view->systemMessages = $systemMessages;
+        $this->view->form = $form;
+        
+        $this->view->member = $member;
     }
 
 }
