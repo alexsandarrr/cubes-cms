@@ -29,7 +29,7 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
     
     /**
      * @param int $id
-     * @param array $user Associative array with keys as column names and values as column new values
+     * @param array $member Associative array with keys as column names and values as column new values
      */
     public function updateMember ($id, $member) {
         
