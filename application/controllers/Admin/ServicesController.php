@@ -345,5 +345,68 @@ class Admin_ServicesController extends Zend_Controller_Action
         }
         
     }
+    
+    public function updateorderAction () {
+        
+        $request = $this->getRequest();
+        
+        if (!$request->isPost() || $request->getPost('task') != 'saveOrderServices') {
+            // request is not post
+            // or task is not saveOrder
+            // redirect to index page
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_services',
+                            'action' => 'index'
+                                ), 'default', true);
+        }
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+        
+        try {
+            
+            $sortedIds = $request->getPost('sorted_ids_services');
+            
+            if(empty($sortedIds)) {
+                throw new Application_Model_Exception_InvalidInput('Sorted ids are not sent');
+            }
+            
+            $sortedIds = trim($sortedIds, ' ,');
+            
+            if (!preg_match('/^[0-9]+(,[0-9]+)*$/', $sortedIds)) {
+                throw new Application_Model_Exception_InvalidInput('Invalid sorted ids: ' . $sortedIds);
+            }
+            
+            $sortedIds = explode(',', $sortedIds);
+            
+            $cmsServicesTable = new Application_Model_DbTable_CmsServices();
+            
+            $cmsServicesTable->updateOrderOfServices($sortedIds);
+            
+            $flashMessenger->addMessage('Order is successfully saved', 'success');
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_services',
+                            'action' => 'index'
+                                ), 'default', true);
+            
+        } catch (Application_Model_Exception_InvalidInput $ex) {
+            
+            $flashMessenger->addMessage($ex->getMessage(), 'errors');
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_services',
+                            'action' => 'index'
+                                ), 'default', true);
+        
+        }
+        
+    }
 }
 
