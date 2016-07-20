@@ -2,6 +2,8 @@
 
 class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
 {
+    const DEFAULT_PASSWORD = 'cubesphp';
+    
     const STATUS_ENABLED = 1;
     const STATUS_DISABLED = 0;
     
@@ -28,6 +30,20 @@ class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
     }
     
     /**
+     * 
+     * @param array $user Associative array with keys as column names and values as column new values
+     * @return int ID of new user
+     */
+    public function insertUser ($user) {
+        
+        // set default password for new user
+        $user['password'] = md5(self::DEFAULT_PASSWORD);
+        
+        return $this->insert($user);
+        
+    }
+
+        /**
      * @param int $id
      * @param array $user Associative array with keys as column names and values as column new values
      */
