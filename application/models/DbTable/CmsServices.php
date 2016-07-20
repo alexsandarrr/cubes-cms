@@ -47,6 +47,21 @@ class Application_Model_DbTable_CmsServices extends Zend_Db_Table_Abstract
      */
     public function insertService ($service) {
         
+        $select = $this->select();
+        
+        $select->order('order_number DESC');
+        
+        $serviceWithBiggerstOrderNumber = $this->fetchRow($select);
+        
+        if ($serviceWithBiggerstOrderNumber instanceof Zend_Db_table_Row) {
+            
+            $service['order_number'] = $serviceWithBiggerstOrderNumber['order_number'] + 1;
+            
+        } else {
+            
+            $service['order_number'] = 1;
+        }
+        
         $id = $this->insert($service);
         
         return $id;
@@ -56,6 +71,13 @@ class Application_Model_DbTable_CmsServices extends Zend_Db_Table_Abstract
      * @param int $id ID of service to delete
      */
     public function deleteService($id) {
+        
+        $service = $this->getServiceById($id);
+        
+        $this->update(array(
+           'order_number' => new Zend_Db_Expr('order_number - 1') 
+        ),
+        'order_number > ' . $service['order_number']);
         
         $this->delete('id = ' . $id);
     }

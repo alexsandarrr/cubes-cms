@@ -14,7 +14,8 @@ class ServicesController extends Zend_Controller_Action
         
         $select = $cmsServicesDbTable->select();
         
-        $select->where('status = ?', Application_Model_DbTable_CmsServices::STATUS_ENABLED);
+        $select->where('status = ?', Application_Model_DbTable_CmsServices::STATUS_ENABLED)
+                ->order('order_number');
         
         $services = $cmsServicesDbTable->fetchAll($select);
         

@@ -8,6 +8,8 @@ class Admin_ServicesController extends Zend_Controller_Action
         
         $select = $cmsServicesDbTable->select();
         
+        $select->order('order_number');
+        
         $services = $cmsServicesDbTable->fetchAll($select);
         
         $flashMessenger = $this->getHelper('FlashMessenger');
