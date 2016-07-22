@@ -42,8 +42,38 @@ class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
         return $this->insert($user);
         
     }
+    
+    /**
+     * @param int $id ID of user to delete
+     */
+    public function deleteUser ($id) {
+        
+        // user who is going to be deleted
+        $user = $this->getUserById($id);
+        
+        $this->delete('id = ' . $id);
+    }
 
-        /**
+    /**
+     * @param int $id ID of user to disable
+     */
+    public function disableUser ($id) {
+        
+        $this->update(array(
+            'status' => self::STATUS_DISABLED
+        ), 'id = ' . $id);
+    }
+    
+    /**
+     * @param int $id ID of user to enable
+     */
+    public function enableUser ($id) {
+        
+        $this->update(array(
+            'status' => self::STATUS_ENABLED
+        ), 'id = ' . $id);
+    }
+    /**
      * @param int $id
      * @param array $user Associative array with keys as column names and values as column new values
      */
