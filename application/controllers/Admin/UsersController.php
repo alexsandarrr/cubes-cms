@@ -6,7 +6,18 @@ class Admin_UsersController extends Zend_Controller_Action
         
         $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
         
-        $users = $cmsUsersDbTable->fetchAll()->toArray();
+        $loggerdInUser = Zend_Auth::getInstance()->getIdentity();
+        
+        $users = $cmsUsersDbTable->search(array(
+            'filters' => array(
+                'id_exclude' => $loggerdInUser['id'],
+            ),
+            'orders' => array(
+                'first_name' => 'ASC',
+            ),
+//            'limit' => 3,
+//            'page' => 2,
+        ));
         
         $flashMessenger = $this->getHelper('FlashMessenger');
         

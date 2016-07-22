@@ -179,9 +179,13 @@ $this->headTitle('Users');
 
 <?php
 
-$this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.css')); // osnovni kod za dodavanje CSS-a na stranicu
-$this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.js')); // osnovni kod za dodavanje JS-a na stranicu
-        
+$this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css'));
+$this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-responsive/css/dataTables.responsive.css'));
+
+$this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables/media/js/jquery.dataTables.min.js'));
+$this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js'));
+$this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables-responsive/js/dataTables.responsive.js'));
+
 ?>
 <script>
 <?php $this->inlineScript()->captureStart(); ?>    
@@ -256,7 +260,15 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/jquery
        
    });
    
+   $('#rows-table').dataTable({
+       columnDefs: [
+           {targets: [0, 5], orderable: false, searchable: false}
+       ],
+       order: [
+           [2, 'asc']
+       ],
+       lengthMenu: [3, 5, 10, 20, 50, 100]
+   });
    
-
 <?php $this->inlineScript()->captureEnd(); ?>  
 </script>
