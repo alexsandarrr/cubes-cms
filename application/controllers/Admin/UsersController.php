@@ -163,32 +163,27 @@ class Admin_UsersController extends Zend_Controller_Action
     }
     
     public function deleteAction () {
-        
         $request = $this->getRequest();
         
-        if (!$request->isPost() || $request->getPost('task') != 'deleteUser') {
-            // request is not post
-            // or task is not delete
-            // redirect to index page
+        $id = (int) $request->getParam('id');
+        
+        if ($id <= 0) {
+            
+            // prekida se izvrsavanje programa i prikazuje se "Page not found"
+            throw new Zend_Controller_Router_Exception('Invalid user id: ' . $id, 404);
+        }
+        
+        $loggedinUser = Zend_Auth::getInstance()->getIdentity();
+        
+        if ($id == $loggedinUser['id']) {
             
             $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
-                            'controller' => 'admin_ussers',
-                            'action' => 'index'
+                            'controller' => 'admin_profile',
+                            'action' => 'edit'
                                 ), 'default', true);
-        }
-        
-        $flashMessenger = $this->getHelper('FlashMessenger');
-        
-        try {
-            // read $_POST['id]
-        $id = (int) $request->getPost('id');
-        
-        if ($id <= 0) {
-            
-            throw new Application_Model_Exception_InvalidInput('Invalid user\'s id: ' . $id);
-            
+                
         }
         
         $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
@@ -196,64 +191,64 @@ class Admin_UsersController extends Zend_Controller_Action
         $user = $cmsUsersTable->getUserById($id);
         
         if (empty($user)) {
-            
-            throw new Application_Model_Exception_InvalidInput('No user is found with id: ' . $id);
-            
+            throw new Zend_Controller_Router_Exception('No user is found with id: ' . $id, 404);
         }
         
-        $cmsUsersTable->deleteUser($id);
         
-        $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been deleted', 'success');
-            
-            $redirector = $this->getHelper('Redirector');
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+
+        $systemMessages = array(
+            'success' => $flashMessenger->getMessages('success'),
+            'errors' => $flashMessenger->getMessages('errors'),
+        );
+
+        if ($request->isPost() && $request->getPost('task') === 'deleteUser') {
+
+            try {
+                
+                $cmsUsersTable->deleteUser($id);
+                
+                $flashMessenger->addMessage('User has been deleted', 'success');
+
+                // redirect to same or another page
+                $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
                             'controller' => 'admin_users',
                             'action' => 'index'
                                 ), 'default', true);
-        
-    
-        } catch (Application_Model_Exception_InvalidInput $ex) {
-            
-            $flashMessenger->addMessage($ex->getMessage(), 'errors');
-            
-            $redirector = $this->getHelper('Redirector');
-                $redirector->setExit(true)
-                        ->gotoRoute(array(
-                            'controller' => 'admin_users',
-                            'action' => 'index'
-                                ), 'default', true);
+            } catch (Application_Model_Exception_InvalidInput $ex) {
+                $systemMessages['errors'][] = $ex->getMessage();
+            }
         }
-        
+
+        $this->view->systemMessages = $systemMessages;
     }
     
     public function disableAction () {
         
         $request = $this->getRequest();
         
-        if (!$request->isPost() || $request->getPost('task') != 'disableUser') {
-            // request is not post
-            // or task is not delete
-            // redirect to index page
+        $id = (int) $request->getParam('id');
+        
+        if ($id <= 0) {
+            
+            // prekida se izvrsavanje programa i prikazuje se "Page not found"
+            throw new Zend_Controller_Router_Exception('Invalid user id: ' . $id, 404);
+        }
+        
+        $loggedinUser = Zend_Auth::getInstance()->getIdentity();
+        
+        if ($id == $loggedinUser['id']) {
             
             $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
-                            'controller' => 'admin_users',
-                            'action' => 'index'
+                            'controller' => 'admin_profile',
+                            'action' => 'edit'
                                 ), 'default', true);
-        }
-        
-        $flashMessenger = $this->getHelper('FlashMessenger');
-        
-        try {
-            // read $_POST['id']
-        $id = (int) $request->getPost('id');
-        
-        if ($id <= 0) {
-            
-            throw new Application_Model_Exception_InvalidInput('Invalid user id: ' . $id);
-            
+                
         }
         
         $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
@@ -261,164 +256,168 @@ class Admin_UsersController extends Zend_Controller_Action
         $user = $cmsUsersTable->getUserById($id);
         
         if (empty($user)) {
-            
-            throw new Application_Model_Exception_InvalidInput('No user is found with id: ' . $id);
-            
+            throw new Zend_Controller_Router_Exception('No user is found with id: ' . $id, 404);
         }
         
-        $cmsUsersTable->disableUser($id);
         
-        $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been disabled', 'success');
-            
-            $redirector = $this->getHelper('Redirector');
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+
+        $systemMessages = array(
+            'success' => $flashMessenger->getMessages('success'),
+            'errors' => $flashMessenger->getMessages('errors'),
+        );
+
+        if ($request->isPost() && $request->getPost('task') === 'disableUser') {
+
+            try {
+                
+                $cmsUsersTable->disableUser($id);
+                
+                $flashMessenger->addMessage('User has been disabled', 'success');
+
+                // redirect to same or another page
+                $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
                             'controller' => 'admin_users',
                             'action' => 'index'
                                 ), 'default', true);
-        
-    
-        } catch (Application_Model_Exception_InvalidInput $ex) {
-            
-            $flashMessenger->addMessage($ex->getMessage(), 'errors');
-            
-            $redirector = $this->getHelper('Redirector');
-                $redirector->setExit(true)
-                        ->gotoRoute(array(
-                            'controller' => 'admin_users',
-                            'action' => 'index'
-                                ), 'default', true);
+            } catch (Application_Model_Exception_InvalidInput $ex) {
+                $systemMessages['errors'][] = $ex->getMessage();
+            }
         }
+
+        $this->view->systemMessages = $systemMessages;
         
     }
 
     public function enableAction () {
-        
         $request = $this->getRequest();
         
-        if (!$request->isPost() || $request->getPost('task') != 'enableUser') {
-            // request is not post
-            // or task is not delete
-            // redirect to index page
+        $id = (int) $request->getParam('id');
+        
+        if ($id <= 0) {
+            
+            // prekida se izvrsavanje programa i prikazuje se "Page not found"
+            throw new Zend_Controller_Router_Exception('Invalid user id: ' . $id, 404);
+        }
+        
+        $loggedinUser = Zend_Auth::getInstance()->getIdentity();
+        
+        if ($id == $loggedinUser['id']) {
             
             $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
-                            'controller' => 'admin_users',
-                            'action' => 'index'
+                            'controller' => 'admin_profile',
+                            'action' => 'edit'
                                 ), 'default', true);
+                
         }
         
-        $flashMessenger = $this->getHelper('FlashMessenger');
+        $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
+                
+        $user = $cmsUsersTable->getUserById($id);
         
-        try {
-            // read $_POST['id]
-            $id = (int) $request->getPost('id');
-
-            if ($id <= 0) {
-
-                throw new Application_Model_Exception_InvalidInput('Invalid user id: ' . $id);
-
-            }
-
-            $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
-
-            $user = $cmsUsersTable->getUserById($id);
-
-            if (empty($user)) {
-
-                throw new Application_Model_Exception_InvalidInput('No user is found with id: ' . $id);
-
-            }
-
-            $cmsUsersTable->enableUser($id);
-
-            $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been enabled', 'success');
-
-                $redirector = $this->getHelper('Redirector');
-                    $redirector->setExit(true)
-                            ->gotoRoute(array(
-                                'controller' => 'admin_users',
-                                'action' => 'index'
-                                    ), 'default', true);
-        
-    
-        } catch (Application_Model_Exception_InvalidInput $ex) {
-            
-            $flashMessenger->addMessage($ex->getMessage(), 'errors');
-            
-            $redirector = $this->getHelper('Redirector');
-                $redirector->setExit(true)
-                        ->gotoRoute(array(
-                            'controller' => 'admin_users',
-                            'action' => 'index'
-                                ), 'default', true);
+        if (empty($user)) {
+            throw new Zend_Controller_Router_Exception('No user is found with id: ' . $id, 404);
         }
         
-    }
-    
-    public function resetpasswordAction () {
         
-        $request = $this->getRequest();
+        
         $flashMessenger = $this->getHelper('FlashMessenger');
-
-        //default form data
-        // $form->populate($user);
 
         $systemMessages = array(
             'success' => $flashMessenger->getMessages('success'),
-            'errors' => $flashMessenger->getMessages('errors')
+            'errors' => $flashMessenger->getMessages('errors'),
+        );
+
+        if ($request->isPost() && $request->getPost('task') === 'enableUser') {
+
+            try {
+                
+                $cmsUsersTable->enableUser($id);
+                
+                $flashMessenger->addMessage('User has been enabled', 'success');
+
+                // redirect to same or another page
+                $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_users',
+                            'action' => 'index'
+                                ), 'default', true);
+            } catch (Application_Model_Exception_InvalidInput $ex) {
+                $systemMessages['errors'][] = $ex->getMessage();
+            }
+        }
+
+        $this->view->systemMessages = $systemMessages;
+    }
+    
+    public function resetpasswordAction () {
+        $request = $this->getRequest();
+        
+        $id = (int) $request->getParam('id');
+        
+        if ($id <= 0) {
+            
+            // prekida se izvrsavanje programa i prikazuje se "Page not found"
+            throw new Zend_Controller_Router_Exception('Invalid user id: ' . $id, 404);
+        }
+        
+        $loggedinUser = Zend_Auth::getInstance()->getIdentity();
+        
+        if ($id == $loggedinUser['id']) {
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_profile',
+                            'action' => 'edit'
+                                ), 'default', true);
+                
+        }
+        
+        $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
+                
+        $user = $cmsUsersTable->getUserById($id);
+        
+        if (empty($user)) {
+            throw new Zend_Controller_Router_Exception('No user is found with id: ' . $id, 404);
+        }
+        
+        
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+
+        $systemMessages = array(
+            'success' => $flashMessenger->getMessages('success'),
+            'errors' => $flashMessenger->getMessages('errors'),
         );
 
         if ($request->isPost() && $request->getPost('task') === 'resetPassword') {
 
             try {
-            // read $_POST['id]
-            $id = (int) $request->getPost('id');
+                
+                $cmsUsersTable->changeUserPassword($id, Application_Model_DbTable_CmsUsers::DEFAULT_PASSWORD);
+                
+                $flashMessenger->addMessage('Password has been restet', 'success');
 
-            if ($id <= 0) {
-
-                throw new Application_Model_Exception_InvalidInput('Invalid user id: ' . $id);
-
-            }
-
-            $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
-
-            $user = $cmsUsersTable->getUserById($id);
-
-            if (empty($user)) {
-
-                throw new Application_Model_Exception_InvalidInput('No user is found with id: ' . $id);
-
-            }
-
-            $cmsUsersTable->changeUserPassword($id, DEFAULT_PASSWORD);
-
-            $flashMessenger->addMessage('Password of user ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been reserted', 'success');
-
+                // redirect to same or another page
                 $redirector = $this->getHelper('Redirector');
-                    $redirector->setExit(true)
-                            ->gotoRoute(array(
-                                'controller' => 'admin_users',
-                                'action' => 'index'
-                                    ), 'default', true);
-        
-    
-        } catch (Application_Model_Exception_InvalidInput $ex) {
-            
-            $flashMessenger->addMessage($ex->getMessage(), 'errors');
-            
-            $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
                             'controller' => 'admin_users',
                             'action' => 'index'
                                 ), 'default', true);
-        }
+            } catch (Application_Model_Exception_InvalidInput $ex) {
+                $systemMessages['errors'][] = $ex->getMessage();
+            }
         }
 
         $this->view->systemMessages = $systemMessages;
-        $this->view->form = $form;
     }
 }
 
