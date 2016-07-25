@@ -308,7 +308,7 @@ class Admin_ServicesController extends Zend_Controller_Action
         
         if ($id <= 0) {
             
-            throw new Application_Model_Exception_InvalidInput('Invalid servuce id: ' . $id);
+            throw new Application_Model_Exception_InvalidInput('Invalid service id: ' . $id);
             
         }
         
