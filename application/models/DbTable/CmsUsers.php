@@ -196,77 +196,77 @@ class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
         // obect are always passed by reference
         foreach ($filters as $field => $value) {
                 
-                if ($field == 'id') {
-                    
-                    if (is_array($value)) {
-                        $select->where('id IN (?)', $value);
-                    } else {
-                        $select->where('id = ?', $value);
-                    }
-                }
-                
-                switch ($field) {
-                    
-                    case 'id':
-                    case 'username':
-                    case 'first_name':
-                    case 'last_name':
-                    case 'email':
-                    case 'status':
-                        if (is_array($value)) {
-                            $select->where($field . ' IN (?)', $value);
-                        } else {
-                            $select->where($field . ' = ?', $value);
-                        }
-                        break;
-                        
-                    case 'password':
-                        if (is_array($value)) {
-                            
-                            array_walk($value, function(&$element, $key) {
-                                // applay md5 on each element in $value array
-                                $element = md5($element);
-                            });
-                            
-                            $select->where($field . ' IN (?)', $value);
-                        } else {
-                            $select->where($field . ' = ?', md5($value));
-                        }
-                        break;
-                        
-                    case 'username_search':
-                        $select->where('username LIKE ?', '%' . $value . '%');
-                        break;
-                    
-                    case 'first_name_search':
-                        $select->where('first_name LIKE ?', '%' . $value . '%');
-                        break;
-                    
-                    case 'last_name_search':
-                        $select->where('last_name LIKE ?', '%' . $value . '%');
-                        break;
-                    
-                    case 'email_search':
-                        $select->where('email LIKE ?', '%' . $value . '%');
-                        break;
-                    
-                    case 'id_exclude':
-                        if (is_array($value)) {
-                            $select->where('id NOT IN (?)', $value);
-                        } else {
-                            $select->where('id != ?', $value);
-                        }
-                        break;
-                        
-                    case 'username_exclude':
-                        if (is_array($value)) {
-                            $select->where('username NOT IN (?)', $value);
-                        } else {
-                            $select->where('username != ?', $value);
-                        }
-                        break;
+            if ($field == 'id') {
+
+                if (is_array($value)) {
+                    $select->where('id IN (?)', $value);
+                } else {
+                    $select->where('id = ?', $value);
                 }
             }
+
+            switch ($field) {
+
+                case 'id':
+                case 'username':
+                case 'first_name':
+                case 'last_name':
+                case 'email':
+                case 'status':
+                    if (is_array($value)) {
+                        $select->where($field . ' IN (?)', $value);
+                    } else {
+                        $select->where($field . ' = ?', $value);
+                    }
+                    break;
+
+                case 'password':
+                    if (is_array($value)) {
+
+                        array_walk($value, function(&$element, $key) {
+                            // applay md5 on each element in $value array
+                            $element = md5($element);
+                        });
+
+                        $select->where($field . ' IN (?)', $value);
+                    } else {
+                        $select->where($field . ' = ?', md5($value));
+                    }
+                    break;
+
+                case 'username_search':
+                    $select->where('username LIKE ?', '%' . $value . '%');
+                    break;
+
+                case 'first_name_search':
+                    $select->where('first_name LIKE ?', '%' . $value . '%');
+                    break;
+
+                case 'last_name_search':
+                    $select->where('last_name LIKE ?', '%' . $value . '%');
+                    break;
+
+                case 'email_search':
+                    $select->where('email LIKE ?', '%' . $value . '%');
+                    break;
+
+                case 'id_exclude':
+                    if (is_array($value)) {
+                        $select->where('id NOT IN (?)', $value);
+                    } else {
+                        $select->where('id != ?', $value);
+                    }
+                    break;
+
+                case 'username_exclude':
+                    if (is_array($value)) {
+                        $select->where('username NOT IN (?)', $value);
+                    } else {
+                        $select->where('username != ?', $value);
+                    }
+                    break;
+            }
+        }
     }
 }
 
