@@ -59,7 +59,7 @@ class Admin_TestController extends Zend_Controller_Action
 //        
 //        echo json_encode($brandsJson)
         
-        $this->getHelper('Json')->sendJson($brands);
+        $this->getHelper('Json')->sendJson($brandsJson);
     }
     
     public function ajaxmodelsAction () {
@@ -91,7 +91,19 @@ class Admin_TestController extends Zend_Controller_Action
         if (!isset($brands[$brand])) {
             throw new Zend_Controller_Router_Exception('Unknown brand', 404);
         }
+        
+        $models = $brands[$brand];
+        
+        $modelsJson = array();
+        
+        foreach ($models as $modelId => $modelLabel) {
+            $modelsJson[] = array(
+                'value' => $modelId,
+                'label' =>$modelLabel
+            );
+        }
+        $this->getHelper('Json')->sendJson($modelsJson);
+        
     }
-    
 }
 

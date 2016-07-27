@@ -430,5 +430,118 @@ class Admin_UsersController extends Zend_Controller_Action
 
         $this->view->systemMessages = $systemMessages;
     }
+    
+    public function datatableAction() {
+        
+        $request = $this->getRequest();
+        
+        $datatableParameters = $request->getParams();
+        
+    /*
+    $datatableParameters ce biti u ovom formatu
+        Array
+            (
+                [controller] => admin_users
+                [action] => datatable
+                [module] => default
+    
+                [draw] => 2
+    
+                [order] => Array
+                    (
+                        [0] => Array
+                            (
+                                [column] => 2
+                                [dir] => asc
+                            )
+
+                    )
+
+                [start] => 0
+                [length] => 5
+                [search] => Array
+                    (
+                        [value] => 
+                        [regex] => false
+                    )
+        ) 
+
+    */
+        
+        $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
+        
+        $loggedInUser = Zend_Auth::getInstance()->getIdentity();
+        $filters = array(
+            'id_exclude' => $loggedInUser['id']
+        );
+        $orders = array();
+        $limit = 5;
+        $page = 1;
+        $draw = 1;
+        
+        $columns = array('status', 'username', 'first_name', 'last_name', 'email', 'actions');
+        
+        // Process datatable parameters
+        
+        if (isset($datatableParameters['draw'])) {
+            
+            $draw = $datatableParameters['draw'];
+            
+            if (isset($datatableParameters['length'])) {
+                
+                // limit rows per page
+                $limit = $datatableParameters['length'];
+                
+                if (isset($datatableParameters['start'])) {
+                    
+                    $page = floor($datatableParameters['start'] / $datatableParameters['length']) + 1;
+                }
+            }
+            
+            if (
+                isset($datatableParameters['order']) && 
+                is_array($datatableParameters['order'])
+                ) {
+                
+                foreach ($datatableParameters['order'] as $datatableOrder) {
+                    $columnIndex = $datatableOrder['column'];
+                    $orderDirection = strtoupper($datatableOrder['dir']);
+                    
+                    if (isset($columns[$columnIndex])) {
+                        
+                    }
+                    
+                    $orders[$columns[$columnIndex]] = $orderDirection;
+                }
+            }
+            
+            if (
+                isset($datatableParameters['search']) &&
+                is_array($datatableParameters['search']) &&
+                isset($datatableParameters['search']['value'])
+                ) {
+                
+                $filters['username_search'] = $datatableParameters['search']['value'];
+                
+            }
+        }
+        
+        $users = $cmsUsersTable->search(array(
+            'filters' => $filters,
+            'orders' => $orders,
+            'limit' => $limit,
+            'page' => $page
+        ));
+        
+        $usersFilteredCount = $cmsUsersTable->count($filters);
+        $usersTotal = $cmsUsersTable->count();
+        
+        $this->view->users = $users;
+        $this->view->usersFilteredCount = $usersFilteredCount;
+        $this->view->usersTotal = $usersTotal;
+        $this->view->draw = $draw;
+        $this->view->columns = $columns;
+        
+    }
 }
 

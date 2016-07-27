@@ -180,7 +180,7 @@ $this->headTitle('Users');
 <?php
 
 $this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css'));
-$this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-responsive/css/dataTables.responsive.css'));
+//$this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-responsive/css/dataTables.responsive.css'));
 
 $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables/media/js/jquery.dataTables.min.js'));
 $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js'));
@@ -267,7 +267,9 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
        order: [
            [2, 'asc']
        ],
-       lengthMenu: [3, 5, 10, 20, 50, 100]
+       lengthMenu: [3, 5, 10, 20, 50, 100],
+       serverSide: true,
+       ajax: "<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'datatable'), 'default', true);?>"
    });
    
 <?php $this->inlineScript()->captureEnd(); ?>  
