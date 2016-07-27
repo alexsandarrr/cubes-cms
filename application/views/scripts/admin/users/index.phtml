@@ -262,13 +262,14 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
    
    $('#rows-table').dataTable({
        columnDefs: [
-           {targets: [0, 5], orderable: false, searchable: false}
+           {targets: [5], orderable: false, searchable: false}
        ],
        order: [
            [2, 'asc']
        ],
        lengthMenu: [3, 5, 10, 20, 50, 100],
        serverSide: true,
+       processing: true,
        ajax: "<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'datatable'), 'default', true);?>"
    });
    
