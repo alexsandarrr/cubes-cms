@@ -4,21 +4,6 @@ class Admin_UsersController extends Zend_Controller_Action
 {
     public function indexAction () {
         
-        $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
-        
-        $loggerdInUser = Zend_Auth::getInstance()->getIdentity();
-        
-        $users = $cmsUsersDbTable->search(array(
-            'filters' => array(
-                'id_exclude' => $loggerdInUser['id'],
-            ),
-            'orders' => array(
-                'first_name' => 'ASC',
-            ),
-//            'limit' => 3,
-//            'page' => 2,
-        ));
-        
         $flashMessenger = $this->getHelper('FlashMessenger');
         
         $systemMessages = array(
@@ -26,7 +11,7 @@ class Admin_UsersController extends Zend_Controller_Action
             'errors' => $flashMessenger->getMessages('errors'),
         );
         
-        $this->view->users = $users;
+        $this->view->users = array();
         $this->view->systemMessages = $systemMessages;
     }
     
