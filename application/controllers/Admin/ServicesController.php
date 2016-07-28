@@ -410,5 +410,32 @@ class Admin_ServicesController extends Zend_Controller_Action
         }
         
     }
+    
+    public function dashboardAction () {
+        
+        $countServices = array(
+            'total' => 0,
+            'active' => 0,
+        );
+        
+        $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
+        
+        $select = $cmsServicesDbTable->select();
+        
+        $services = $cmsServicesDbTable->fetchAll($select);
+        
+        
+        foreach ($services as $service) {
+            $countServices['total'] += 1;
+            
+            if ($service['status'] == Application_Model_DbTable_CmsServices::STATUS_ENABLED) {
+                $countServices['active'] += 1;
+            }
+        
+        $this->view->countServices = $countServices;
+        
+        }
+        
+    }
 }
 

@@ -528,5 +528,32 @@ class Admin_UsersController extends Zend_Controller_Action
         $this->view->columns = $columns;
         
     }
+    
+    public function dashboardAction () {
+     
+        $countUsers = array(
+            'total' => 0,
+            'active' => 0,
+        );
+        
+        $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
+        
+        $select = $cmsUsersDbTable->select();
+        
+        $users = $cmsUsersDbTable->fetchAll($select);
+        
+        
+        foreach ($users as $user) {
+            $countUsers['total'] += 1;
+            
+            if ($user['status'] == Application_Model_DbTable_CmsUsers::STATUS_ENABLED) {
+                $countUsers['active'] += 1;
+            }
+        
+        $this->view->countUsers = $countUsers;
+        
+        }
+        
+    }
 }
 

@@ -1,0 +1,27 @@
+<?php
+
+Zend_Layout::getMvcInstance()->disableLayout();
+$countServices = $this->countServices;
+
+?>
+
+<div class="panel panel-green">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-xs-3">
+                <i class="fa fa-cog fa-5x"></i>
+            </div>
+            <div class="col-xs-9 text-right">
+                <div class="huge"><?php echo $this->escape($countServices['total']) . ' / ' . $this->escape($countServices['active']);?></div>
+                <div>Services total / active</div>
+            </div>
+        </div>
+    </div>
+    <a href="<?php echo $this->url(array('controller' => 'admin_services'), 'default', true);?>">
+        <div class="panel-footer">
+            <span class="pull-left">View Details</span>
+            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+            <div class="clearfix"></div>
+        </div>
+    </a>
+</div>

@@ -465,6 +465,33 @@ class Admin_ClientsController extends Zend_Controller_Action
         }
         
     }
+    
+    public function dashboardAction () {
+        
+        $countClients = array(
+            'total' => 0,
+            'active' => 0,
+        );
+        
+        $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
+        
+        $select = $cmsClientsDbTable->select();
+        
+        $clients = $cmsClientsDbTable->fetchAll($select);
+        
+        
+        foreach ($clients as $client) {
+            $countClients['total'] += 1;
+            
+            if ($client['status'] == Application_Model_DbTable_CmsClients::STATUS_ENABLED) {
+                $countClients['active'] += 1;
+            }
+        
+        $this->view->countClients = $countClients;
+        
+        }
+        
+    }
 }
 
 
