@@ -7,7 +7,7 @@ $this->headTitle('Users');
   <h1>Users</h1>
 </div>
 <div class="row">
-	<div class="col-lg-12">
+	<div class="col-lg-12" id="system-messages-container">
 		<?php echo $this->systemMessagesHtml($this->systemMessages);?>
 	</div>
 </div>
@@ -36,7 +36,7 @@ $this->headTitle('Users');
 						</tr>
 					</thead>
 					<tbody>
-						<?php 
+						<?php /*
 						foreach ($this->users as $user) {
 							if ($user['status'] == Application_Model_DbTable_CmsUsers::STATUS_DISABLED) {
 							?>
@@ -85,7 +85,7 @@ $this->headTitle('Users');
 						
 							<?php
 						}
-						?>
+						*/ ?>
 						
 					</tbody>
 				</table>
@@ -118,7 +118,7 @@ $this->headTitle('Users');
 </form><!-- /.modal -->
 
 <form method="post" action="<?php echo  $this->url(array('controller' => 'admin_users', 'action' => 'disable'), 'default', true);?>" id="disable-warning-dialog" class="modal fade" tabindex="-1" role="dialog">
-    <input type="hidden" name="task" value="disableUser">
+    <input type="hidden" name="task" value="disable">
     <input type="hidden" name="id" value="">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -176,6 +176,20 @@ $this->headTitle('Users');
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </form><!-- /.modal -->
+
+<div style="display: none">
+    
+    <div data-container="message-box-success" class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <span data-container="message-text"></span>
+    </div>
+    
+    <div data-container="message-box-error" class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <span data-container="message-text"></span>
+    </div>
+    
+</div>
 
 <?php
 
@@ -260,9 +274,10 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
        
    });
    
-   $('#rows-table').dataTable({
-       columnDefs: [
-           {targets: [5], orderable: false, searchable: false}
+   $('#rows-table').DataTable({
+       columnDefs: [ // definicije za kolone
+           {targets: [5], orderable: false, searchable: false},
+           {targets: [0, 5], className: 'text-center'} // className za odredjivanje klase
        ],
        order: [
            [2, 'asc']
@@ -271,6 +286,49 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
        serverSide: true,
        processing: true,
        ajax: "<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'datatable'), 'default', true);?>"
+   });
+   
+   $('#disable-warning-dialog').on('submit', function (e) {
+       e.preventDefault(); // stop manual form submit
+       
+       var target = $(this).is('#disable-warning-dialog') ? $(this) : $(this).closest('#disable-warning-dialog');
+       
+       $.ajax({
+           url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'disable'), 'default', true);?>',
+           method: 'post',
+           data: {
+               // prenosimo sve parametre koji imaju name atribut
+               task: 'disable',
+               id: target.find('[name="id"]').val()
+           }
+       }).done(function(data) {
+           
+           if (data['status'] == 'ok') {
+               
+               var messageBox = $('[data-container="message-box-success"]').last().clone(true); // po defaultu klonira samo HTML, ako navedemo true onda klonira i event handlere
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            } else {
+                var messageBox = $('[data-container="message-box-error"]').last().clone(true); // po defaultu klonira samo HTML, ako navedemo true onda klonira i event handlere
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            }
+       }).fail(function() {
+           // error in communication with server
+           
+           alert('Error: Server returned error')
+       }).always(function() {
+           target.modal('hide');
+           
+           // refresh table kepp selected page
+           $('#rows-table').DataTable().draw(false); // ako stavimo false, ostace na stranici na kojoj smo
+       });
    });
    
 <?php $this->inlineScript()->captureEnd(); ?>  

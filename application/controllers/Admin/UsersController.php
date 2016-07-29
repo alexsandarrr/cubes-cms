@@ -264,23 +264,61 @@ class Admin_UsersController extends Zend_Controller_Action
             'errors' => $flashMessenger->getMessages('errors'),
         );
 
-        if ($request->isPost() && $request->getPost('task') === 'disableUser') {
+        if ($request->isPost() && $request->getPost('task') === 'disable') {
 
             try {
                 
                 $cmsUsersTable->disableUser($id);
                 
-                $flashMessenger->addMessage('User has been disabled', 'success');
+                $request instanceof Zend_Controller_Request_Http;
+                
+                if ($request->isXmlHttpRequest()) {
+                    //request is ajax request
+                    // send response as json
+                    
+                    $responseJson = array(
+                        'status' => 'ok',
+                        'statusMessage' => 'User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been disabled'
+                    );
+                    
+                    // send json as response
+                    $this->getHelper('Json')->sendJson($responseJson);
+                    
+                } else {
+                    // request is not ajax
+                    // send message over session (flashMessanger)
+                    // and do redirect
+                    
+                    $flashMessenger->addMessage('User has been disabled', 'success');
 
-                // redirect to same or another page
-                $redirector = $this->getHelper('Redirector');
-                $redirector->setExit(true)
-                        ->gotoRoute(array(
-                            'controller' => 'admin_users',
-                            'action' => 'index'
-                                ), 'default', true);
+                    $redirector = $this->getHelper('Redirector');
+                    $redirector->setExit(true)
+                            ->gotoRoute(array(
+                                'controller' => 'admin_users',
+                                'action' => 'index'
+                                    ), 'default', true);
+                }
             } catch (Application_Model_Exception_InvalidInput $ex) {
-                $systemMessages['errors'][] = $ex->getMessage();
+                if ($request->isXmlHttpRequest()) {
+                    //request is ajax
+                    
+                    $responseJson = array(
+                        'status' => 'error',
+                        'statusMessage' => $ex->getMessage()
+                    );
+                    
+                    $this->getHelper('Json')->sendJson($responseJson);
+                } else {
+                    
+                    $flashMessenger->addMessage($ex->getMessage(), 'errors');
+
+                    $redirector = $this->getHelper('Redirector');
+                    $redirector->setExit(true)
+                            ->gotoRoute(array(
+                                'controller' => 'admin_users',
+                                'action' => 'index'
+                                    ), 'default', true);
+                }
             }
         }
 
