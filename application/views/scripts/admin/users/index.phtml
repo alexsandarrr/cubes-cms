@@ -177,7 +177,7 @@ $this->headTitle('Users');
   </div><!-- /.modal-dialog -->
 </form><!-- /.modal -->
 
-<div style="display: none">
+<div id="message-templates" style="display: none">
     
     <div data-container="message-box-success" class="alert alert-success alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -305,18 +305,23 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
            
            if (data['status'] == 'ok') {
                
-               var messageBox = $('[data-container="message-box-success"]').last().clone(true); // po defaultu klonira samo HTML, ako navedemo true onda klonira i event handlere
+               var messageBox = $('#message-templates [data-container="message-box-success"]').clone(true); // po defaultu klonira samo HTML, ako navedemo true onda klonira i event handlere
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               // delay fadeout for 5000 milliseconds
+               messageBox.delay(5000).fadeOut();
                
             } else {
-                var messageBox = $('[data-container="message-box-error"]').last().clone(true); // po defaultu klonira samo HTML, ako navedemo true onda klonira i event handlere
+                var messageBox = $('#message-templates').find('[data-container="message-box-error"]').clone(true); // po defaultu klonira samo HTML, ako navedemo true onda klonira i event handlere
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             }
        }).fail(function() {
@@ -348,18 +353,22 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
            
            if (data['status'] == 'ok') {
                
-               var messageBox = $('[data-container="message-box-success"]').last().clone(true);
+               var messageBox = $('#message-templates [data-container="message-box-success"]').clone(true);
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             } else {
-                var messageBox = $('[data-container="message-box-error"]').last().clone(true);
+                var messageBox = $('#message-templates [data-container="message-box-error"]').clone(true);
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             }
        }).fail(function() {
@@ -390,18 +399,22 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
            
            if (data['status'] == 'ok') {
                
-               var messageBox = $('[data-container="message-box-success"]').last().clone(true);
+               var messageBox = $('#message-templates [data-container="message-box-success"]').clone(true);
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             } else {
-                var messageBox = $('[data-container="message-box-error"]').last().clone(true);
+                var messageBox = $('#message-templates [data-container="message-box-error"]').clone(true);
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             }
        }).fail(function() {
@@ -431,18 +444,22 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
            
            if (data['status'] == 'ok') {
                
-               var messageBox = $('[data-container="message-box-success"]').last().clone(true);
+               var messageBox = $('#message-templates [data-container="message-box-success"]').clone(true);
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             } else {
-                var messageBox = $('[data-container="message-box-error"]').last().clone(true);
+                var messageBox = $('#message-templates [data-container="message-box-error"]').clone(true);
                
                messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
                
                $('#system-messages-container').append(messageBox);
+               
+               messageBox.delay(5000).fadeOut();
                
             }
        }).fail(function() {
