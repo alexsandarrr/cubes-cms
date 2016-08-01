@@ -98,7 +98,7 @@ $this->headTitle('Users');
 </div>
 
 <form method="post" action="<?php echo  $this->url(array('controller' => 'admin_users', 'action' => 'delete'), 'default', true);?>" id="delete-warning-dialog" class="modal fade" tabindex="-1" role="dialog">
-    <input type="hidden" name="task" value="deleteUser">
+    <input type="hidden" name="task" value="delete">
     <input type="hidden" name="id" value="">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -138,7 +138,7 @@ $this->headTitle('Users');
 </form><!-- /.modal -->
 
 <form method="post" action="<?php echo  $this->url(array('controller' => 'admin_users', 'action' => 'enable'), 'default', true);?>" id="enable-warning-dialog" class="modal fade" tabindex="-1" role="dialog">
-    <input type="hidden" name="task" value="enableUser">
+    <input type="hidden" name="task" value="enable">
     <input type="hidden" name="id" value="">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -282,7 +282,7 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
        order: [
            [2, 'asc']
        ],
-       lengthMenu: [3, 5, 10, 20, 50, 100],
+       lengthMenu: [10, 20, 50, 100],
        serverSide: true,
        processing: true,
        ajax: "<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'datatable'), 'default', true);?>"
@@ -322,12 +322,136 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datata
        }).fail(function() {
            // error in communication with server
            
-           alert('Error: Server returned error')
+           alert('Error: Server returned error');
        }).always(function() {
            target.modal('hide');
            
            // refresh table kepp selected page
            $('#rows-table').DataTable().draw(false); // ako stavimo false, ostace na stranici na kojoj smo
+       });
+   });
+   
+   $('#enable-warning-dialog').on('submit', function (e) {
+       e.preventDefault();
+       
+       var target = $(this).is('#enable-warning-dialog') ? $(this) : $(this).closest('#enable-warning-dialog');
+       
+       $.ajax({
+           url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'enable'), 'default', true);?>',
+           method: 'post',
+           data: {
+               
+               task: 'enable',
+               id: target.find('[name="id"]').val()
+           }
+       }).done(function(data) {
+           
+           if (data['status'] == 'ok') {
+               
+               var messageBox = $('[data-container="message-box-success"]').last().clone(true);
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            } else {
+                var messageBox = $('[data-container="message-box-error"]').last().clone(true);
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            }
+       }).fail(function() {
+           
+           alert('Error: Server returned error');
+       }).always(function() {
+           target.modal('hide');
+           
+           
+           $('#rows-table').DataTable().draw(false);
+       });
+   });
+   
+   $('#delete-warning-dialog').on('submit', function (e) {
+       e.preventDefault();
+       
+       var target = $(this).is('#delete-warning-dialog') ? $(this) : $(this).closest('#delete-warning-dialog');
+       
+       $.ajax({
+           url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'delete'), 'default', true);?>',
+           method: 'post',
+           data: {
+               
+               task: 'delete',
+               id: target.find('[name="id"]').val()
+           }
+       }).done(function(data) {
+           
+           if (data['status'] == 'ok') {
+               
+               var messageBox = $('[data-container="message-box-success"]').last().clone(true);
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            } else {
+                var messageBox = $('[data-container="message-box-error"]').last().clone(true);
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            }
+       }).fail(function() {
+           
+           alert('Error: Server returned error');
+       }).always(function() {
+           target.modal('hide');
+           
+           $('#rows-table').DataTable().draw(false);
+       });
+   });
+   
+   $('#resetpassword-warning-dialog').on('submit', function (e) {
+       e.preventDefault();
+       
+       var target = $(this).is('#resetpassword-warning-dialog') ? $(this) : $(this).closest('#resetpassword-warning-dialog');
+       
+       $.ajax({
+           url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'resetpassword'), 'default', true);?>',
+           method: 'post',
+           data: {
+               
+               task: 'resetPassword',
+               id: target.find('[name="id"]').val()
+           }
+       }).done(function(data) {
+           
+           if (data['status'] == 'ok') {
+               
+               var messageBox = $('[data-container="message-box-success"]').last().clone(true);
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            } else {
+                var messageBox = $('[data-container="message-box-error"]').last().clone(true);
+               
+               messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+               
+               $('#system-messages-container').append(messageBox);
+               
+            }
+       }).fail(function() {
+           
+           alert('Error: Server returned error');
+       }).always(function() {
+           target.modal('hide');
+           
+           $('#rows-table').DataTable().draw(false);
        });
    });
    
