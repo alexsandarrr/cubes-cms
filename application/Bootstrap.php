@@ -25,7 +25,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             array(
                 'controller' => 'aboutus',
                 'action' => 'member',
-                //'member_slug' => '', // ovo je default za member_slug
+                'member_slug' => '', // ovo je default za member_slug, u ovom slucaju je prazan string
             )
         ));
     }

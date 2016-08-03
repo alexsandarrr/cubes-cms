@@ -4,25 +4,25 @@ class Admin_MembersController extends Zend_Controller_Action
 {
     public function indexAction () {
         //prikaz svih member-a
-        
-        $cmsMembersDbTable = new Application_Model_DbTable_CmsMembers();
-        
-        // $select je objekat klase Zend_Db_Select
-        $select = $cmsMembersDbTable->select();
-        
-        $select->order('order_number');
-        
-        // debug za db select - vraca se sql upit
-        //die($select->assemble());
-        
-        $members = $cmsMembersDbTable->fetchAll($select);
-        
         $flashMessenger = $this->getHelper('FlashMessenger');
         
         $systemMessages = array(
             'success' => $flashMessenger->getMessages('success'),
             'errors' => $flashMessenger->getMessages('errors'),
         );
+        
+        $cmsMembersDbTable = new Application_Model_DbTable_CmsMembers();
+        
+        $members = $cmsMembersDbTable->search(array(
+//            'filters' => array(
+//                'id' => array(1, 3, 5, 7)
+//            ),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+            //'limit' => 4,
+            //'page' => 3
+        ));
         
         $this->view->members = $members;
         $this->view->systemMessages = $systemMessages;
