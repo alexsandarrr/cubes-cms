@@ -4,20 +4,23 @@ class Admin_ClientsController extends Zend_Controller_Action
 {
     public function indexAction () {
         
-        $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
-        
-        $select = $cmsClientsDbTable->select();
-        
-        $select->order('order_number');
-        
-        $clients = $cmsClientsDbTable->fetchAll($select);
-        
         $flashMessenger = $this->getHelper('FlashMessenger');
         
         $systemMessages = array(
             'success' => $flashMessenger->getMessages('success'),
             'errors' => $flashMessenger->getMessages('errors'),
         );
+        
+        $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
+        
+        $clients = $cmsClientsDbTable->search(array(
+            //'filters' => array(),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+            //'limit' => 4,
+            //'page' => 3
+        ));
         
         $this->view->clients = $clients;
         $this->view->systemMessages = $systemMessages;
@@ -468,29 +471,21 @@ class Admin_ClientsController extends Zend_Controller_Action
     
     public function dashboardAction () {
         
-        $countClients = array(
-            'total' => 0,
-            'active' => 0,
-        );
-        
         $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
         
-        $select = $cmsClientsDbTable->select();
+        $clientsTotal = $cmsClientsDbTable->count(array(
+            'orders' => array(
+                'order_number' => 'ASC'
+                )
+        ));
         
-        $clients = $cmsClientsDbTable->fetchAll($select);
+        $clientsActive = $cmsClientsDbTable->count(array(
+            'status' => Application_Model_DbTable_CmsClients::STATUS_ENABLED
+        ));
         
-        
-        foreach ($clients as $client) {
-            $countClients['total'] += 1;
-            
-            if ($client['status'] == Application_Model_DbTable_CmsClients::STATUS_ENABLED) {
-                $countClients['active'] += 1;
-            }
-        
-        $this->view->countClients = $countClients;
-        
-        }
-        
+        $this->view->clientsTotal = $clientsTotal;
+        $this->view->clientsActive = $clientsActive;
+         
     }
 }
 

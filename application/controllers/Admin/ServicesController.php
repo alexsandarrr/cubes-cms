@@ -4,20 +4,23 @@ class Admin_ServicesController extends Zend_Controller_Action
 {
     public function indexAction () {
         
-        $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
-        
-        $select = $cmsServicesDbTable->select();
-        
-        $select->order('order_number');
-        
-        $services = $cmsServicesDbTable->fetchAll($select);
-        
         $flashMessenger = $this->getHelper('FlashMessenger');
         
         $systemMessages = array(
             'success' => $flashMessenger->getMessages('success'),
             'errors' => $flashMessenger->getMessages('errors'),
         );
+        
+        $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
+        
+        $services = $cmsServicesDbTable->search(array(
+            //'filters' => array(),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+            //'limit' => 4,
+            //'page' => 3
+        ));
         
         $this->view->services = $services;
         $this->view->systemMessages = $systemMessages;
@@ -413,28 +416,20 @@ class Admin_ServicesController extends Zend_Controller_Action
     
     public function dashboardAction () {
         
-        $countServices = array(
-            'total' => 0,
-            'active' => 0,
-        );
-        
         $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
         
-        $select = $cmsServicesDbTable->select();
+        $servicesTotal = $cmsServicesDbTable->count(array(
+            'orders' => array(
+                'order_number' => 'ASC'
+                )
+        ));
         
-        $services = $cmsServicesDbTable->fetchAll($select);
+        $servicesActive = $cmsServicesDbTable->count(array(
+            'status' => Application_Model_DbTable_CmsServices::STATUS_ENABLED
+        ));
         
-        
-        foreach ($services as $service) {
-            $countServices['total'] += 1;
-            
-            if ($service['status'] == Application_Model_DbTable_CmsServices::STATUS_ENABLED) {
-                $countServices['active'] += 1;
-            }
-        
-        $this->view->countServices = $countServices;
-        
-        }
+        $this->view->servicesTotal = $servicesTotal;
+        $this->view->servicesActive = $servicesActive;
         
     }
 }

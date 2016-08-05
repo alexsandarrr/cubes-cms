@@ -11,6 +11,17 @@ class Admin_UsersController extends Zend_Controller_Action
             'errors' => $flashMessenger->getMessages('errors'),
         );
         
+        $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
+        
+        $users = $cmsUsersDbTable->search(array(
+            //'filters' => array(),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+            //'limit' => 4,
+            //'page' => 3
+        ));
+        
         $this->view->users = array();
         $this->view->systemMessages = $systemMessages;
     }
@@ -342,6 +353,7 @@ class Admin_UsersController extends Zend_Controller_Action
                     );
                     
                     $this->getHelper('Json')->sendJson($responseJson);
+                    
                 } else {
                     
                     $flashMessenger->addMessage($ex->getMessage(), 'errors');
@@ -673,29 +685,20 @@ class Admin_UsersController extends Zend_Controller_Action
     
     public function dashboardAction () {
      
-        $countUsers = array(
-            'total' => 0,
-            'active' => 0,
-        );
-        
         $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
         
-        $select = $cmsUsersDbTable->select();
+        $usersTotal = $cmsUsersDbTable->count(array(
+            'orders' => array(
+                'order_number' => 'ASC'
+                )
+        ));
         
-        $users = $cmsUsersDbTable->fetchAll($select);
+        $usersActive = $cmsUsersDbTable->count(array(
+            'status' => Application_Model_DbTable_CmsUsers::STATUS_ENABLED
+        ));
         
-        
-        foreach ($users as $user) {
-            $countUsers['total'] += 1;
-            
-            if ($user['status'] == Application_Model_DbTable_CmsUsers::STATUS_ENABLED) {
-                $countUsers['active'] += 1;
-            }
-        
-        $this->view->countUsers = $countUsers;
-        
-        }
-        
+        $this->view->usersTotal = $usersTotal;
+        $this->view->usersActive = $usersActive;
     }
 }
 

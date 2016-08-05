@@ -1,6 +1,8 @@
 <?php
 Zend_Layout::getMvcInstance()->disableLayout();
-$countMembers = $this->countMembers;
+
+$membersTotal = $this->membersTotal;
+$membersActive = $this->membersActive;
 
 ?>
 
@@ -11,7 +13,7 @@ $countMembers = $this->countMembers;
                 <i class="fa fa-table fa-5x"></i>
             </div>
             <div class="col-xs-9 text-right">
-                <div class="huge"><?php echo $this->escape($countMembers['total']) . ' / ' . $this->escape($countMembers['active']);?></div>
+                <div class="huge"><?php echo $this->escape($membersTotal) . ' / ' . $this->escape($membersActive);?></div>
                 <div>Members total / active</div>
             </div>
         </div>

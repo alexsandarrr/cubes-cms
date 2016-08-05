@@ -1,7 +1,9 @@
 <?php
 
 Zend_Layout::getMvcInstance()->disableLayout();
-$countUsers = $this->countUsers;
+        
+$usersTotal = $this->usersTotal;
+$usersActive = $this->usersActive;
 
 ?>
 
@@ -12,7 +14,7 @@ $countUsers = $this->countUsers;
                 <i class="fa fa-user fa-5x"></i>
             </div>
             <div class="col-xs-9 text-right">
-                <div class="huge"><?php echo $this->escape($countUsers['total']) . ' / ' . $this->escape($countUsers['active']);?></div>
+                <div class="huge"><?php echo $this->escape($usersTotal) . ' / ' . $this->escape($usersActive);?></div>
                 <div>Users total / active</div>
             </div>
         </div>

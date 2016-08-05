@@ -1,7 +1,9 @@
 <?php
 
 Zend_Layout::getMvcInstance()->disableLayout();
-$countServices = $this->countServices;
+
+$servicesTotal = $this->servicesTotal;
+$servicesActive = $this->servicesActive;
 
 ?>
 
@@ -12,7 +14,7 @@ $countServices = $this->countServices;
                 <i class="fa fa-cog fa-5x"></i>
             </div>
             <div class="col-xs-9 text-right">
-                <div class="huge"><?php echo $this->escape($countServices['total']) . ' / ' . $this->escape($countServices['active']);?></div>
+                <div class="huge"><?php echo $this->escape($servicesTotal) . ' / ' . $this->escape($servicesActive);?></div>
                 <div>Services total / active</div>
             </div>
         </div>
