@@ -12,6 +12,19 @@ class ContactController extends Zend_Controller_Action
     {
         // action body
     }
+    
+    public function askmemberAction () {
+        
+        $request = $this->getRequest();
+        
+        $id = (int) $request->get('id');
+        
+        $cmsMembersDbTable = new Application_Model_DbTable_CmsMembers();
+        
+        $member = $cmsMembersDbTable->getMemberById($id);
+        
+        $this->view->member = $member;
+    }
 
 
 }

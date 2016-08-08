@@ -31,6 +31,7 @@ $this->headTitle('Member - ' . $member['first_name'] . ' ' . $member['last_name'
 									<?php echo $this->escape($member['work_title']);?>
 								</h5>
 								<p><?php echo $this->escape($member['resume']);?></p>
+                                                                <a href="<?php echo $this->url(array('id' => $member['id'], 'member_slug' => $member['first_name'] . '-' . $member['last_name']), 'ask-member-route', true);?>"> Ask Member</a>
 								<div class="social-media bordered-top-medium">
 									<a data-original-title="Twitter" data-placement="top" class="_tooltip" href="#"><i class="fa fa-twitter"></i></a>
 									<a data-original-title="Facebook" data-placement="top" class="_tooltip" href="#"><i class="fa fa-facebook"></i></a>
