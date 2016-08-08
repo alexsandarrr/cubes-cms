@@ -400,5 +400,71 @@ class Admin_SitemapController extends Zend_Controller_Action
         }
         
     }
+    
+    public function deleteAction () {
+        
+        $request = $this->getRequest();
+        
+        if (!$request->isPost() || $request->getPost('task') != 'delete') {
+            // request is not post
+            // or task is not delete
+            // redirect to index page
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_sitemap',
+                            'action' => 'index'
+                                ), 'default', true);
+        }
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+        
+        try {
+            // read $_POST['id]
+        $id = (int) $request->getPost('id');
+        
+        if ($id <= 0) {
+            
+            throw new Application_Model_Exception_InvalidInput('Invalid sitema page id: ' . $id);
+            
+        }
+        
+        $cmsSitemapPagesTable = new Application_Model_DbTable_CmsSitemapPages();
+                
+        $sitemapPage = $cmsSitemapPagesTable->getSitemapPageById($id);
+        
+        if (empty($sitemapPage)) {
+            
+            throw new Application_Model_Exception_InvalidInput('No sitemapPage is found with id: ' . $id);
+            
+        }
+        
+        $cmsSitemapPagesTable->deleteSitemapPage($id);
+        
+        $flashMessenger->addMessage('Sitemap page '  . ' ' . $sitemapPage['short_title'] . ' has been deleted', 'success');
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_sitemap',
+                            'action' => 'index',
+                            'id' => $sitemapPage['parent_id']
+                                ), 'default', true);
+        
+    
+        } catch (Application_Model_Exception_InvalidInput $ex) {
+            
+            $flashMessenger->addMessage($ex->getMessage(), 'errors');
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_sitemapPages',
+                            'action' => 'index'
+                                ), 'default', true);
+        }
+        
+    }
 }
 

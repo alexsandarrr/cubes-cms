@@ -6,6 +6,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // POSLEDNJA DODATA RUTA IMA NAJVECI PRIORITET!!!
         
+        // ensure that database is configured
+        $this->bootstrap('db');
+        
         $router = Zend_Controller_Front::getInstance()->getRouter();
         
         $router instanceof Zend_Controller_Router_Rewrite;
@@ -45,6 +48,49 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 'member_slug' => '',
             )
         ));
+        
+        $sitemapPagesMap = Application_Model_DbTable_CmsSitemapPages::getSitemapPagesMap();
+        
+        foreach ($sitemapPagesMap as $sitemapPageId => $sitemapPageMap) {
+            
+            if ($sitemapPageMap['type'] = 'StaticPage') {
+                
+                $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
+                    $sitemapPageMap['url'], 
+                    array(
+                        'controller' => 'staticpage',
+                        'action' => 'index',
+                        'sitemap_page_id' => $sitemapPageId
+                    )
+                ));
+            }
+            
+            if ($sitemapPageMap['type'] = 'AboutUsPage') {
+                
+                $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
+                    $sitemapPageMap['url'], 
+                    array(
+                        'controller' => 'aboutus',
+                        'action' => 'index',
+                        'sitemap_page_id' => $sitemapPageId
+                    )
+                ));
+                
+            }
+            
+            if ($sitemapPageMap['type'] = 'ContactPage') {
+                
+                $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
+                    $sitemapPageMap['url'], 
+                    array(
+                        'controller' => 'contact',
+                        'action' => 'index',
+                        'sitemap_page_id' => $sitemapPageId
+                    )
+                ));
+                
+            }
+        }
     }
 }
 
