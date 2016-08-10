@@ -33,7 +33,9 @@ class Application_Form_Admin_SitemapPageEdit extends Zend_Form
         // no can do
         $type->addMultiOption('', '-- Select Sitemap Page Type --')
                 ->addMultiOptions(array(
-                    'StaticPage' => 'Static Page'
+                    'StaticPage' => 'Static Page',
+                    'AboutUsPage' => 'About Us Page',
+                    'ContactPage' => 'Contact Page'
                 ))->setRequired(true);
         $this->addElement($type);
         

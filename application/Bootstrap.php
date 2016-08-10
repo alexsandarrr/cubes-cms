@@ -53,7 +53,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         foreach ($sitemapPagesMap as $sitemapPageId => $sitemapPageMap) {
             
-            if ($sitemapPageMap['type'] = 'StaticPage') {
+            if ($sitemapPageMap['type'] == 'StaticPage') {
                 
                 $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
                     $sitemapPageMap['url'], 
@@ -65,7 +65,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 ));
             }
             
-            if ($sitemapPageMap['type'] = 'AboutUsPage') {
+            if ($sitemapPageMap['type'] == 'AboutUsPage') {
                 
                 $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
                     $sitemapPageMap['url'], 
@@ -78,7 +78,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 
             }
             
-            if ($sitemapPageMap['type'] = 'ContactPage') {
+            if ($sitemapPageMap['type'] == 'ContactPage') {
                 
                 $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
                     $sitemapPageMap['url'], 

@@ -460,9 +460,79 @@ class Admin_SitemapController extends Zend_Controller_Action
             $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
                         ->gotoRoute(array(
-                            'controller' => 'admin_sitemapPages',
+                            'controller' => 'admin_sitemap',
                             'action' => 'index'
                                 ), 'default', true);
+        }
+        
+    }
+    
+    public function updateorderAction () {
+        
+        $request = $this->getRequest();
+            
+        $cmsSitemapPagesTable = new Application_Model_DbTable_CmsSitemapPages();
+        
+        $id = (int) $request->getParam('id');
+
+        $sitemapPage = $cmsSitemapPagesTable->getSitemapPageById($id);
+        
+        if (!$request->isPost() || $request->getPost('task') != 'saveOrder') {
+            // request is not post
+            // or task is not saveOrder
+            // redirect to index page
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_sitemap',
+                            'action' => 'index',
+                            'id' => $sitemapPage['parent_id']
+                                ), 'default', true);
+        }
+        
+        $flashMessenger = $this->getHelper('FlashMessenger');
+        
+        try {
+            
+            $sortedIds = $request->getPost('sorted_ids');
+            
+            if(empty($sortedIds)) {
+                throw new Application_Model_Exception_InvalidInput('Sortered ids are not sent');
+            }
+            
+            $sortedIds = trim($sortedIds, ' ,');
+            
+            if (!preg_match('/^[0-9]+(,[0-9]+)*$/', $sortedIds)) {
+                throw new Application_Model_Exception_InvalidInput('Invalid sorted ids: ' . $sortedIds);
+            }
+            
+            $sortedIds = explode(',', $sortedIds);
+            
+            $cmsSitemapPagesTable->updateOrderOfSitemapPages($sortedIds);
+            
+            $flashMessenger->addMessage('Order is successfully saved', 'success');
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_sitemap',
+                            'action' => 'index',
+                            'id' => $sitemapPage['parent_id']
+                                ), 'default', true);
+            
+        } catch (Application_Model_Exception_InvalidInput $ex) {
+            
+            $flashMessenger->addMessage($ex->getMessage(), 'errors');
+            
+            $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_sitemap',
+                            'action' => 'index',
+                            'id' => $sitemapPage['parent_id']
+                                ), 'default', true);
+        
         }
         
     }
