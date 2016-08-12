@@ -55,23 +55,7 @@
 								</a>
 							</div>
 							<div class="collapse navbar-collapse">
-								<ul class="nav navbar-right" id="main-menu">
-									<li>
-										<a href="<?php echo $this->baseUrl('/');?>">Home</a>
-									</li>
-                                                                        <li>
-										<a href="<?php echo $this->baseUrl('/services/index');?>">Services</a>
-									</li>
-                                                                        <li>
-										<a href="<?php echo $this->url(array(), 'about-us-route', true);?>">About Us</a>
-									</li>
-									<li>
-										<a href="<?php echo $this->url(array(), 'contact-us-route', true);?>">Contact</a>
-									</li>
-									<li>
-										<a href="<?php echo $this->baseUrl('/admin_session/login');?>"><i class="fa fa-user"></i> Login</a>
-									</li>
-								</ul>
+								<?php echo $this->topMenuHtml() ;?>
 							</div>
 							<!--/.nav-collapse -->
 						</div>
