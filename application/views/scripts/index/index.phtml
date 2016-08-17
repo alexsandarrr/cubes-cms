@@ -23,13 +23,13 @@ $this->headTitle($indexSlides['title']);
 								</div>
 								<div class="col-sm-6 caption animated fadeInUpBig">
 									<h2>
-										Slide 1 Title<?php echo $this->escape($indexSlide['title']);?>
+										<?php echo $this->escape($indexSlide['title']);?>
 									</h2>
 									<p>
-										Slide 1 Description HTML<?php echo $this->escape($indexSlide['description']);?>
+										<?php echo $this->escape($indexSlide['description']);?>
 									</p>
                                                                         <?php if ($indexSlide['link_type'] != 'NoLink') { ?>
-									<a href="#slide-1-link-url" class="btn btn-lg btn-primary"><?php echo $this->escape($indexSlide['link_label']);?></a>
+									<a href="<?php echo $this->indexSlideLinkUrl($indexSlide);?>" class="btn btn-lg btn-primary"><?php echo $this->escape($indexSlide['link_label']);?></a>
                                                                         <?php } ?>
 								</div>
 							</div>
@@ -49,7 +49,7 @@ $this->headTitle($indexSlides['title']);
 				<div class="block services margin-top-large">
 					<h2 class="block-title">
 						<span>Our Services</span> 
-						<small><a href="<?php echo $this->sitemapPageUrl($sitemapPageId) ;?>">View all</a></small>
+						<small><a href="<?php echo $this->sitemapPageUrl($sitemapPageId);?>">View all</a></small>
 					</h2>
 					<ul class="thumbnails row">
                                             <?php foreach ($services as $service) { ?>

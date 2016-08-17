@@ -20,8 +20,7 @@ class IndexController extends Zend_Controller_Action
             'orders' => array (
                 'order_number' => 'ASC'
             ),
-            'limit' => 4,
-            'page' =>  1
+            'limit' => 4
         ));
         
         $cmsSitemapPagesDbTable = new Application_Model_DbTable_CmsSitemapPages();
@@ -30,7 +29,8 @@ class IndexController extends Zend_Controller_Action
             'filters' => array (
                 'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
                 'type' => 'ServicesPage'
-            )
+            ),
+            'limit' => 1
         ));
         
         $sitemapPageId = $sitemapPages[0]['id'];
