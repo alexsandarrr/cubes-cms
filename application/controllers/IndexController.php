@@ -10,21 +10,46 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
+        $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
         
         // $select je objekat klase Zend_Db_Select
-        $select = $cmsClientsDbTable->select();
+        $services = $cmsServicesDbTable->search (array(
+            'filters' => array (
+                'status' => Application_Model_DbTable_CmsServices::STATUS_ENABLED,
+            ),
+            'orders' => array (
+                'order_number' => 'ASC'
+            ),
+            'limit' => 4,
+            'page' =>  1
+        ));
         
-        $select->where('status = ?', Application_Model_DbTable_CmsClients::STATUS_ENABLED)
-                ->order('order_number');
+        $cmsSitemapPagesDbTable = new Application_Model_DbTable_CmsSitemapPages();
         
-        // debug za db select - vraca se sql upit
-        //die($select->assemble());
+        $sitemapPages = $cmsSitemapPagesDbTable->search (array(
+            'filters' => array (
+                'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
+                'type' => 'ServicesPage'
+            )
+        ));
         
-        $clients = $cmsClientsDbTable->fetchAll($select);
+        $sitemapPageId = $sitemapPages[0]['id'];
+        
+        $cmsIndexSlidesDbTable = new Application_Model_DbTable_CmsIndexSlides();
+        
+        $indexSlides = $cmsIndexSlidesDbTable->search (array(
+            'filters' => array (
+                'status' => Application_Model_DbTable_CmsIndexSlides::STATUS_ENABLED,
+            ),
+            'orders' => array (
+                'order_number' => 'ASC'
+            ),
+        ));
         
         
-        $this->view->clients = $clients;
+        $this->view->services = $services;
+        $this->view->indexSlides = $indexSlides;
+        $this->view->sitemapPageId = $sitemapPageId;
     }
 
     public function testAction()

@@ -210,7 +210,7 @@ class Application_Model_DbTable_CmsSitemapPages extends Zend_Db_Table_Abstract
                     case 'url_slug':
                     case 'title':
                     case 'parent_id':
-                    case 'type ':
+                    case 'type':
                     case 'order_number':
                     case 'status':
                         if ($orderDirection === 'DESC') {
@@ -286,7 +286,7 @@ class Application_Model_DbTable_CmsSitemapPages extends Zend_Db_Table_Abstract
                 case 'url_slug':
                 case 'title':
                 case 'parent_id':
-                case 'type ':
+                case 'type':
                 case 'order_number':
                 case 'status':
                     if (is_array($value)) {
