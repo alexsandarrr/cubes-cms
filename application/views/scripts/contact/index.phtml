@@ -1,9 +1,11 @@
-		
 <?php 
 $this->headTitle('Contact');
+$form = $this->form;
+$form->setElementDecorators(array('ViewHelper'));
+$systemMessages = $this->systemMessages;
 ?>
 
-                    <div id="highlighted">
+        <div id="highlighted">
 			<div class="container">
 				<div class="header">
 					<h2 class="page-title">
@@ -18,18 +20,73 @@ $this->headTitle('Contact');
 				<div class="block">
 					<div class="row">
 						<div class="col-sm-6">
-							<form action="#" id="contact-form">
+							<?php
+							if($systemMessages == "init") { ?>
+								<form method="post" action="" id="contact-form">
+								<input type="hidden" name="task" value="contact">
 								<div class="form-group">
-									<input type="text" placeholder="Name" class="form-control">
+								<?php
+									echo $form->getElement('name')->setAttribs(array(
+										'class' => 'form-control input-md',
+										'placeholder' => 'enter your name',
+										'id' => 'name',
+										'required' => 'required'
+                                ));
+                                ?>
+								<?php if ($form->getElement('name')->hasErrors()) { ?>
+                                    <div class="has-error">
+                                        <?php foreach ($form->getElement('name')->getMessages() as $message) { ?>
+                                            <p class="help-block"><?php echo $this->escape($message); ?></p>
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
 								</div>
 								<div class="form-group">
-									<input type="email" placeholder="Email" class="form-control">
+								<?php
+									echo $form->getElement('email')->setAttribs(array(
+										'class' => 'form-control input-md',
+										'placeholder' => 'enter your email',
+										'id' => 'email',
+										'required' => 'required'
+                                ));
+                                ?>
+								<?php if ($form->getElement('email')->hasErrors()) { ?>
+                                    <div class="has-error">
+                                        <?php foreach ($form->getElement('email')->getMessages() as $message) { ?>
+                                            <p class="help-block"><?php echo $this->escape($message); ?></p>
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
 								</div>
 								<div class="form-group">
-									<textarea placeholder="Message" class="form-control" rows="15"></textarea>
+								<?php
+									echo $form->getElement('message')->setAttribs(array(
+										'class' => 'form-control input-md',
+										'placeholder' => 'enter your message',
+										'id' => 'message',
+										'required' => 'required',
+										'rows' => 15
+                                ));
+                                ?>
+								<?php if ($form->getElement('message')->hasErrors()) { ?>
+                                    <div class="has-error">
+                                        <?php foreach ($form->getElement('message')->getMessages() as $message) { ?>
+                                            <p class="help-block"><?php echo $this->escape($message); ?></p>
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
 								</div>
-								<input type="button" value="Send Message" class="btn btn-primary">
+								<input type="submit" value="Send Message" class="btn btn-primary">
 							</form>
+							<?php } else {
+								if ($systemMessages == "Success") {
+									echo "Uspesno poslata poruka";
+								} else {
+									echo "Doslo je do greske prilikom slanja poruke. Molimo vas pokusajte kasnije";
+								}
+							}
+							?>
+							
 						</div>
 						<div class="col-sm-6">
 							<h3 class="block-title sub-title">

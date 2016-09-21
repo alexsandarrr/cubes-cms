@@ -17,8 +17,8 @@ $this->headTitle($indexSlides['title']);
 				<div class="flexslider" id="index-slider">
 					<!--The Slides-->
 					<div class="slides">
-                                            <?php foreach ($indexSlides as $indexSlide) { ?>
-                                                <div class="slide">
+					<?php foreach ($indexSlides as $indexSlide) { ?>
+						<div class="slide">
 							<div class="row">
 								<div class="col-sm-6">
 									<img src="<?php echo $this->indexSlideImgUrl($indexSlide);?>" alt="Slide 1 Title" class="animated fadeInDownBig" />
@@ -30,13 +30,13 @@ $this->headTitle($indexSlides['title']);
 									<p>
 										<?php echo $this->escape($indexSlide['description']);?>
 									</p>
-                                                                        <?php if ($indexSlide['link_type'] != 'NoLink') { ?>
+                                <?php if ($indexSlide['link_type'] != 'NoLink') { ?>
 									<a href="<?php echo $this->indexSlideLinkUrl($indexSlide);?>" class="btn btn-lg btn-primary"><?php echo $this->escape($indexSlide['link_label']);?></a>
-                                                                        <?php } ?>
+                                <?php } ?>
 								</div>
 							</div>
 						</div>
-                                            <?php } ?>
+                    <?php } ?>
 						
 						
 					</div>

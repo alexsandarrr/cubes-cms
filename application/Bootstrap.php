@@ -173,7 +173,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     array(
                         'controller' => 'photogalleries',
                         'action' => 'gallery',
-                        'photo_gallery_slug' => '',
                         'sitemap_page_id' => $sitemapPageId
                     )
                 ));

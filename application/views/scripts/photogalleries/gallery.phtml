@@ -4,8 +4,8 @@ $photoGallery = $this->photoGallery;
 $photos = $this->photos;
 $sitemapPage = $this->sitemapPage;
 
-$this->headTitle($sitemapPage['title']);
 $this->headTitle($photoGallery['title']);
+$this->headTitle($sitemapPage['title']);
 $this->headMeta()->appendName('description', $photoGallery['description']);
 
 ?>
@@ -27,10 +27,10 @@ $this->headMeta()->appendName('description', $photoGallery['description']);
 						<!-- Slider for project pictures -->
 						<div id="photo-gallery-slider-id" class="carousel slide">
 							<div class="carousel-inner">
-                                                            <?php foreach ($photos as $index => $photo) { ?>
-                                                            <div class="item <?php echo $index == 0 ? 'active' : '';?>">
-                                                                <img src="<?php echo $this->photoUrl($photo);?>" alt="<?php echo $this->escape($photo['title']);?>" />
-                                                                <div class="carousel-caption">
+								<?php foreach ($photos as $index => $photo) { ?>
+								<div class="item <?php echo $index == 0 ? 'active' : '';?>">
+									<img src="<?php echo $this->photoUrl($photo);?>" alt="<?php echo $this->escape($photo['title']);?>" />
+									<div class="carousel-caption">
 									<?php if ($photo['title']) {?>
 										<h4>
 											<?php echo $this->escape($photo['title']);?>
@@ -40,9 +40,9 @@ $this->headMeta()->appendName('description', $photoGallery['description']);
 									<?php if ($photo['description']) {?>
 										<p><?php echo $this->escape($photo['description']);?></p>
 									<?php }?>
-                                                                </div>
-                                                            </div>
-                                                            <?php } ?>
+									</div>
+								</div>
+								<?php } ?>
 							</div>
 							<a class="left carousel-control" href="#photo-gallery-slider-id" data-slide="prev">&lsaquo;</a> <a class="right carousel-control" href="#photo-gallery-slider-id" data-slide="next">&rsaquo;</a> 
 						</div>
