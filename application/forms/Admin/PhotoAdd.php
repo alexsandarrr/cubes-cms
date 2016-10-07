@@ -24,8 +24,8 @@ class Application_Form_Admin_PhotoAdd extends Zend_Form
                 ->addValidator('ImageSize', false, array(
                     'minwidth' => 660,
                     'minheight' => 495,
-                    'maxwidth' => 2000,
-                    'maxheight' => 2000
+                    'maxwidth' => 5000,
+                    'maxheight' => 5000
                 ))
                 ->addValidator('Size', false, array(
                     'max' => '10MB'

@@ -23,9 +23,22 @@ class IndexController extends Zend_Controller_Action
             'limit' => 4
         ));
         
+        $cmsPhotoGalleriesDbTable = new Application_Model_DbTable_CmsPhotoGalleries();
+        
+        // $select je objekat klase Zend_Db_Select
+        $photoGalleries = $cmsPhotoGalleriesDbTable->search (array(
+            'filters' => array (
+                'status' => Application_Model_DbTable_CmsPhotoGalleries::STATUS_ENABLED,
+            ),
+            'orders' => array (
+                'order_number' => 'ASC'
+            ),
+            'limit' => 4
+        ));
+        
         $cmsSitemapPagesDbTable = new Application_Model_DbTable_CmsSitemapPages();
         
-        $sitemapPages = $cmsSitemapPagesDbTable->search (array(
+        $sitemapServicesPages = $cmsSitemapPagesDbTable->search (array(
             'filters' => array (
                 'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
                 'type' => 'ServicesPage'
@@ -33,7 +46,16 @@ class IndexController extends Zend_Controller_Action
             'limit' => 1
         ));
         
-        $sitemapPageId = $sitemapPages[0]['id'];
+        $sitemapPhotoGallerisePages = $cmsSitemapPagesDbTable->search (array(
+            'filters' => array (
+                'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
+                'type' => 'PhotoGalleriesPage'
+            ),
+            'limit' => 1
+        ));
+        
+        $sitemapServicesPageId = $sitemapServicesPages[0]['id'];
+        $sitemapPhotoGallerisePageId = $sitemapPhotoGallerisePages[0]['id'];
         
         $cmsIndexSlidesDbTable = new Application_Model_DbTable_CmsIndexSlides();
         
@@ -49,7 +71,9 @@ class IndexController extends Zend_Controller_Action
         
         $this->view->services = $services;
         $this->view->indexSlides = $indexSlides;
-        $this->view->sitemapPageId = $sitemapPageId;
+        $this->view->sitemapServicesPageId = $sitemapServicesPageId;
+        $this->view->sitemapPhotoGallerisePageId = $sitemapPhotoGallerisePageId;
+        $this->view->photoGalleries = $photoGalleries;
     }
 
     public function testAction()
