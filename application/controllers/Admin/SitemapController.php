@@ -99,6 +99,9 @@ class Admin_SitemapController extends Zend_Controller_Action
                 //get form data
                 $formData = $form->getValues();
                 
+                //unset csrf token field
+                unset($formData['csrf_token']);
+                
                 $formData['parent_id'] = $parentId;
                 
                 // remove key sitemap_page_photo from form data because there is no column 'sitemap_page_photo' in cms_sitemapPages table
